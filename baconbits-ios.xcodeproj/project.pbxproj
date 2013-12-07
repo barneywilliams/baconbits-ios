@@ -184,10 +184,10 @@
 		37E2D4E81853848800886A49 /* b2Rope.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4E71853848800886A49 /* b2Rope.cpp */; };
 		37E2D4EE1853848800886A49 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4ED1853848800886A49 /* main.m */; };
 		37E2D4F11853848800886A49 /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4F01853848800886A49 /* AppDelegate.mm */; };
-		37E2D4F41853848800886A49 /* HelloWorldLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4F31853848800886A49 /* HelloWorldLayer.mm */; };
 		37E2D4F71853848800886A49 /* IntroLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4F61853848800886A49 /* IntroLayer.mm */; };
 		37E2D4FA1853848800886A49 /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4F91853848800886A49 /* GLES-Render.mm */; };
 		37E2D4FC1853848800886A49 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D4FB1853848800886A49 /* blocks.png */; };
+		37E2D5041853899600886A49 /* GameLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D5031853899600886A49 /* GameLayer.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -562,13 +562,13 @@
 		37E2D4ED1853848800886A49 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		37E2D4EF1853848800886A49 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		37E2D4F01853848800886A49 /* AppDelegate.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = AppDelegate.mm; sourceTree = "<group>"; };
-		37E2D4F21853848800886A49 /* HelloWorldLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = HelloWorldLayer.h; sourceTree = "<group>"; };
-		37E2D4F31853848800886A49 /* HelloWorldLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = HelloWorldLayer.mm; sourceTree = "<group>"; };
 		37E2D4F51853848800886A49 /* IntroLayer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IntroLayer.h; sourceTree = "<group>"; };
 		37E2D4F61853848800886A49 /* IntroLayer.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = IntroLayer.mm; sourceTree = "<group>"; };
 		37E2D4F81853848800886A49 /* GLES-Render.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLES-Render.h"; sourceTree = "<group>"; };
 		37E2D4F91853848800886A49 /* GLES-Render.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = "GLES-Render.mm"; sourceTree = "<group>"; };
 		37E2D4FB1853848800886A49 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
+		37E2D5021853899600886A49 /* GameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLayer.h; sourceTree = "<group>"; };
+		37E2D5031853899600886A49 /* GameLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameLayer.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -629,10 +629,10 @@
 		37E2D2CB1853848600886A49 /* baconbits-ios */ = {
 			isa = PBXGroup;
 			children = (
+				37E2D5021853899600886A49 /* GameLayer.h */,
+				37E2D5031853899600886A49 /* GameLayer.mm */,
 				37E2D4EF1853848800886A49 /* AppDelegate.h */,
 				37E2D4F01853848800886A49 /* AppDelegate.mm */,
-				37E2D4F21853848800886A49 /* HelloWorldLayer.h */,
-				37E2D4F31853848800886A49 /* HelloWorldLayer.mm */,
 				37E2D4F51853848800886A49 /* IntroLayer.h */,
 				37E2D4F61853848800886A49 /* IntroLayer.mm */,
 				37E2D4F81853848800886A49 /* GLES-Render.h */,
@@ -1291,6 +1291,7 @@
 				37E2D3001853848600886A49 /* CCActionManager.m in Sources */,
 				37E2D3681853848600886A49 /* CCParticleSystemQuad.m in Sources */,
 				37E2D32B1853848600886A49 /* CCDrawNode.m in Sources */,
+				37E2D5041853899600886A49 /* GameLayer.mm in Sources */,
 				37E2D4C21853848800886A49 /* b2PolygonContact.cpp in Sources */,
 				37E2D3BD1853848700886A49 /* CCTransitionPageTurn.m in Sources */,
 				37E2D48F1853848700886A49 /* b2StackAllocator.cpp in Sources */,
@@ -1354,7 +1355,6 @@
 				37E2D3D21853848700886A49 /* CCGLView.m in Sources */,
 				37E2D3FF1853848700886A49 /* CGPointExtension.m in Sources */,
 				37E2D3031853848600886A49 /* CCActionPageTurn3D.m in Sources */,
-				37E2D4F41853848800886A49 /* HelloWorldLayer.mm in Sources */,
 				37E2D4541853848700886A49 /* vec3.c in Sources */,
 				37E2D4061853848700886A49 /* TGAlib.m in Sources */,
 				37E2D30F1853848600886A49 /* CCAnimation.m in Sources */,
