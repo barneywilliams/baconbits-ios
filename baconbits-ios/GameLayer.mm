@@ -41,15 +41,8 @@
 {
     if ((self = [super init]))
     {
-//        _scaleFactor = 0.85; // iPhone 3.5"
-//        _scaleFactor = 0.85; // iPhone 4.0"
-        _scaleFactor = 1.0; // iPad
-//        _scaleFactor = 2.0; // iPad-Retina
+        [self configureForDevice];
 
-        self.touchEnabled = YES;
-        self.accelerometerEnabled = YES;
-
-        _winSize = [CCDirector sharedDirector].winSize;
         _levelComplete = false;
 
         // Set the background image
@@ -78,7 +71,7 @@
 
         // Add the score label
         _scoreValue = 0;
-        _score = [CCLabelTTF labelWithString:@"0" fontName:@"Courier New" fontSize:(36)];
+        _score = [CCLabelTTF labelWithString:@"0" fontName:@"Courier New" fontSize:(_fontSize)];
         _score.position = ccp((_winSize.width * 0.9) - (_score.contentSize.width * _scaleFactor),
                               _winSize.height - _headerYOffset);
         [_score setColor:ccc3(255, 255, 255)];
@@ -202,7 +195,7 @@
 }
 
 - (bool) isSwipe:(float)length {
-    return (length > 20);
+    return length > (20 * _scaleFactor);
 }
 
 - (void) fireAmmo:(CGPoint)end {
@@ -230,7 +223,7 @@
     int offRealX = realX - projectile.position.x;
     int offRealY = realY - projectile.position.y;
     float length = sqrtf((offRealX*offRealX)+(offRealY*offRealY));
-    float velocity = 480/1; // 480 pixels/sec
+    float velocity = 300 * _scaleFactor;
     float realMoveDuration = length/velocity;
 
     // Play sound effect
@@ -255,15 +248,14 @@
 - (void) moveShooter:(CGPoint)end {
 
     // Determine offset of for the move
-    CGPoint offset = ccpSub(end, _shooter.position);
     CGPoint dest = ccp(end.x, _shooter.position.y);
 
     // Calculate duration of move for fixed velocity
-    float length = sqrtf((offset.x * offset.x) + (offset.y * offset.y));
-    float velocity = 480; // 480 pixels/sec
+    float length = abs(end.x - _shooter.position.x);
+    float velocity = 300 * _scaleFactor;
     float duration = length/velocity;
 
-    // Move projectile to actual endpoint
+    // Move shooter to actual endpoint
     [_shooter runAction:
      [CCSequence actions:
       [CCMoveTo actionWithDuration:duration position:dest],
@@ -325,6 +317,46 @@
         [[SimpleAudioEngine sharedEngine] playEffect:@"applause.wav"];
         _levelComplete = true;
     }
+}
+
+- (void) configureForDevice
+{
+    self.touchEnabled = YES;
+    self.accelerometerEnabled = YES;
+
+    _winSize = [CCDirector sharedDirector].winSize;
+
+    UIScreen * screen = [UIScreen mainScreen];
+    CGSize size = screen.bounds.size;
+    CGFloat scale = screen.scale;
+
+    if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+    {
+        if (size.height == 480) {
+            _scaleFactor = 0.85; // iPhone 3.5"
+        }
+        else {
+            _scaleFactor = 0.85; // iPhone 4.0"
+        }
+    }
+    else
+    {
+        if (scale == 1.0) {
+            _scaleFactor = 1.0; // iPad
+        }
+        else {
+            _scaleFactor = 2.0; // iPad-Retina
+        }
+    }
+
+    // Scale font size
+    _fontSize = 24 * _scaleFactor;
+
+    // Calculate game stage bounds
+    _xMin = _winSize.width * 0.1;
+    _xMax = _winSize.width * 0.9;
+    _yMin = _winSize.height * 0.8;
+    _yMax = _winSize.height * 0.1;
 }
 
 

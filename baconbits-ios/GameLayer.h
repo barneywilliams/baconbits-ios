@@ -16,7 +16,9 @@
 @interface GameLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
     float _scaleFactor;
+    int _fontSize;
     float _headerYOffset;
+    float _xMin, _xMax, _yMin, _yMax;
     CGSize _winSize;
     CCLabelTTF * _score;
     int _scoreValue;
@@ -30,6 +32,8 @@
 
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
+
+- (void) configureForDevice;
 
 // Rescales an image
 - (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize;
