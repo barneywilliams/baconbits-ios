@@ -15,6 +15,8 @@
 // HelloWorldLayer
 @interface GameLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
+    float _scaleFactor;
+    float _headerYOffset;
     CGSize _winSize;
     CCLabelTTF * _score;
     int _scoreValue;
@@ -29,6 +31,9 @@
 // returns a CCScene that contains the HelloWorldLayer as the only child
 +(CCScene *) scene;
 
+// Rescales an image
+- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize;
+
 // Indicates if the latest touch is a swipe (vs a tap)
 - (bool) isSwipe:(float)length;
 
@@ -37,5 +42,7 @@
 
 // Moves the shooter to the point
 - (void) moveShooter:(CGPoint)end;
+
+- (void) checkLevelComplete;
 
 @end

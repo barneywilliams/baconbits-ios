@@ -188,6 +188,20 @@
 		37E2D4FA1853848800886A49 /* GLES-Render.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D4F91853848800886A49 /* GLES-Render.mm */; };
 		37E2D4FC1853848800886A49 /* blocks.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D4FB1853848800886A49 /* blocks.png */; };
 		37E2D5041853899600886A49 /* GameLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 37E2D5031853899600886A49 /* GameLayer.mm */; };
+		37E2D5131853B47C00886A49 /* actor.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5051853B47C00886A49 /* actor.png */; };
+		37E2D5141853B47C00886A49 /* ammo.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5061853B47C00886A49 /* ammo.png */; };
+		37E2D5151853B47C00886A49 /* applause.wav in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5071853B47C00886A49 /* applause.wav */; };
+		37E2D5161853B47C00886A49 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5081853B47C00886A49 /* background.png */; };
+		37E2D5171853B47C00886A49 /* bacon-bottom.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5091853B47C00886A49 /* bacon-bottom.png */; };
+		37E2D5181853B47C00886A49 /* bacon-middle.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50A1853B47C00886A49 /* bacon-middle.png */; };
+		37E2D5191853B47C00886A49 /* bacon-top.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50B1853B47C00886A49 /* bacon-top.png */; };
+		37E2D51A1853B47C00886A49 /* bacon.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50C1853B47C00886A49 /* bacon.png */; };
+		37E2D51B1853B47C00886A49 /* baconbitz.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50D1853B47C00886A49 /* baconbitz.bmp */; };
+		37E2D51C1853B47C00886A49 /* boom.wav in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50E1853B47C00886A49 /* boom.wav */; };
+		37E2D51D1853B47C00886A49 /* fire.m4a in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D50F1853B47C00886A49 /* fire.m4a */; };
+		37E2D51E1853B47C00886A49 /* life.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5101853B47C00886A49 /* life.png */; };
+		37E2D51F1853B47C00886A49 /* Rex.wav in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5111853B47C00886A49 /* Rex.wav */; };
+		37E2D5201853B47C00886A49 /* title.png in Resources */ = {isa = PBXBuildFile; fileRef = 37E2D5121853B47C00886A49 /* title.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -569,6 +583,20 @@
 		37E2D4FB1853848800886A49 /* blocks.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = blocks.png; path = Resources/blocks.png; sourceTree = "<group>"; };
 		37E2D5021853899600886A49 /* GameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameLayer.h; sourceTree = "<group>"; };
 		37E2D5031853899600886A49 /* GameLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = GameLayer.mm; sourceTree = "<group>"; };
+		37E2D5051853B47C00886A49 /* actor.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = actor.png; path = Resources/actor.png; sourceTree = "<group>"; };
+		37E2D5061853B47C00886A49 /* ammo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ammo.png; path = Resources/ammo.png; sourceTree = "<group>"; };
+		37E2D5071853B47C00886A49 /* applause.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = applause.wav; path = Resources/applause.wav; sourceTree = "<group>"; };
+		37E2D5081853B47C00886A49 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = background.png; path = Resources/background.png; sourceTree = "<group>"; };
+		37E2D5091853B47C00886A49 /* bacon-bottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bacon-bottom.png"; path = "Resources/bacon-bottom.png"; sourceTree = "<group>"; };
+		37E2D50A1853B47C00886A49 /* bacon-middle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bacon-middle.png"; path = "Resources/bacon-middle.png"; sourceTree = "<group>"; };
+		37E2D50B1853B47C00886A49 /* bacon-top.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bacon-top.png"; path = "Resources/bacon-top.png"; sourceTree = "<group>"; };
+		37E2D50C1853B47C00886A49 /* bacon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = bacon.png; path = Resources/bacon.png; sourceTree = "<group>"; };
+		37E2D50D1853B47C00886A49 /* baconbitz.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; name = baconbitz.bmp; path = Resources/baconbitz.bmp; sourceTree = "<group>"; };
+		37E2D50E1853B47C00886A49 /* boom.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = boom.wav; path = Resources/boom.wav; sourceTree = "<group>"; };
+		37E2D50F1853B47C00886A49 /* fire.m4a */ = {isa = PBXFileReference; lastKnownFileType = file; name = fire.m4a; path = Resources/fire.m4a; sourceTree = "<group>"; };
+		37E2D5101853B47C00886A49 /* life.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = life.png; path = Resources/life.png; sourceTree = "<group>"; };
+		37E2D5111853B47C00886A49 /* Rex.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = Rex.wav; path = Resources/Rex.wav; sourceTree = "<group>"; };
+		37E2D5121853B47C00886A49 /* title.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = title.png; path = Resources/title.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -647,6 +675,20 @@
 		37E2D2CC1853848600886A49 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				37E2D5051853B47C00886A49 /* actor.png */,
+				37E2D5061853B47C00886A49 /* ammo.png */,
+				37E2D5071853B47C00886A49 /* applause.wav */,
+				37E2D5081853B47C00886A49 /* background.png */,
+				37E2D5091853B47C00886A49 /* bacon-bottom.png */,
+				37E2D50A1853B47C00886A49 /* bacon-middle.png */,
+				37E2D50B1853B47C00886A49 /* bacon-top.png */,
+				37E2D50C1853B47C00886A49 /* bacon.png */,
+				37E2D50D1853B47C00886A49 /* baconbitz.bmp */,
+				37E2D50E1853B47C00886A49 /* boom.wav */,
+				37E2D50F1853B47C00886A49 /* fire.m4a */,
+				37E2D5101853B47C00886A49 /* life.png */,
+				37E2D5111853B47C00886A49 /* Rex.wav */,
+				37E2D5121853B47C00886A49 /* title.png */,
 				37E2D2CD1853848600886A49 /* Default.png */,
 				37E2D2CF1853848600886A49 /* Default@2x.png */,
 				37E2D2D11853848600886A49 /* Default-568h@2x.png */,
@@ -1212,6 +1254,11 @@
 			attributes = {
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Atomic Object LLC";
+				TargetAttributes = {
+					37E2D2B31853848600886A49 = {
+						DevelopmentTeam = 322SA5VGT8;
+					};
+				};
 			};
 			buildConfigurationList = 37E2D2AF1853848500886A49 /* Build configuration list for PBXProject "baconbits-ios" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -1235,18 +1282,32 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				37E2D51A1853B47C00886A49 /* bacon.png in Resources */,
 				37E2D2DE1853848600886A49 /* Icon.png in Resources */,
+				37E2D51F1853B47C00886A49 /* Rex.wav in Resources */,
 				37E2D43C1853848700886A49 /* ChangeLog in Resources */,
+				37E2D5181853B47C00886A49 /* bacon-middle.png in Resources */,
+				37E2D5191853B47C00886A49 /* bacon-top.png in Resources */,
+				37E2D5161853B47C00886A49 /* background.png in Resources */,
+				37E2D51E1853B47C00886A49 /* life.png in Resources */,
+				37E2D5201853B47C00886A49 /* title.png in Resources */,
 				37E2D2D01853848600886A49 /* Default@2x.png in Resources */,
+				37E2D5151853B47C00886A49 /* applause.wav in Resources */,
 				37E2D2DA1853848600886A49 /* Icon-Small.png in Resources */,
 				37E2D2D61853848600886A49 /* Icon-72.png in Resources */,
 				37E2D2CE1853848600886A49 /* Default.png in Resources */,
 				37E2D2D81853848600886A49 /* Icon-Small-50.png in Resources */,
+				37E2D5131853B47C00886A49 /* actor.png in Resources */,
 				37E2D2E31853848600886A49 /* iTunesArtwork in Resources */,
 				37E2D4FC1853848800886A49 /* blocks.png in Resources */,
 				37E2D2DC1853848600886A49 /* Icon-Small@2x.png in Resources */,
+				37E2D5141853B47C00886A49 /* ammo.png in Resources */,
 				37E2D2D41853848600886A49 /* Default-Landscape~ipad.png in Resources */,
 				37E2D2D21853848600886A49 /* Default-568h@2x.png in Resources */,
+				37E2D5171853B47C00886A49 /* bacon-bottom.png in Resources */,
+				37E2D51C1853B47C00886A49 /* boom.wav in Resources */,
+				37E2D51B1853B47C00886A49 /* baconbitz.bmp in Resources */,
+				37E2D51D1853B47C00886A49 /* fire.m4a in Resources */,
 				37E2D2E01853848600886A49 /* Icon@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1466,6 +1527,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1492,6 +1554,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "baconbits-ios/Prefix.pch";
@@ -1533,6 +1596,7 @@
 				37E2D5011853848800886A49 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
