@@ -171,11 +171,12 @@
 - (void) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
     // Record end of touch
+    uitouch *touch = ;
     CGPoint target = [self convertTouchToNodeSpace:[touches anyObject]];
-    float length = ccpDistance(_touchStart, target);
+    float swipeLength = ccpDistance(_touchStart, target);
 
     // Move the shooter to the end of a swipe
-    if (length > _swipeMin) {
+    if ([self isSwipe:swipeLength]) {
         [self moveShooter:target];
     }
     else {
@@ -188,16 +189,19 @@
     }
 }
 
+- (bool) isSwipe:(float)length {
+    return length > _swipeMin;
+}
+
 - (void) fireAmmo:(CGPoint)end {
 
     // Set up initial location of projectile
     CCSprite *projectile = [CCSprite spriteWithFile:@"ammo.png"];
     projectile.scale = _scaleFactor;
     projectile.position = ccp(_shooter.position.x, _shooter.position.y + (_shooter.contentSize.width * _scaleFactor * 0.5f));
-    CGPoint dest = ccp(_shooter.position.x, _yMin);
 
     // Determine offset of location to projectile
-    CGPoint offset = ccpSub(dest, projectile.position);
+    CGPoint offset = ccpSub(end, projectile.position);
 
     // Bail out if you are shooting down or backwards
     if (offset.y <= 0) return;
