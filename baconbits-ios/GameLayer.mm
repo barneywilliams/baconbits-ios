@@ -6,33 +6,22 @@
 //  Copyright Atomic Object LLC 2013. All rights reserved.
 //
 
-
 // Import the interfaces
 #import "GameLayer.h"
 
 // Needed to obtain the Navigation Controller
 #import "AppDelegate.h"
-
 #import "SimpleAudioEngine.h"
 
 #pragma mark - GameLayer
-
-// HelloWorldLayer implementation
 @implementation GameLayer
 
-// Helper class method that creates a Scene with the HelloWorldLayer as the only child.
+// Helper class method that creates a CCScene with the GameLayer as the only child.
 +(CCScene *) scene
 {
-	// 'scene' is an autorelease object.
 	CCScene *scene = [CCScene node];
-
-	// 'layer' is an autorelease object.
 	GameLayer *layer = [GameLayer node];
-
-	// add layer as a child to scene
 	[scene addChild: layer];
-
-	// return the scene
 	return scene;
 }
 
@@ -43,18 +32,16 @@
     {
         [self configureForDevice];
 
-        _levelComplete = false;
-
         // Set the background image
         CCSprite * bg = [CCSprite spriteWithFile:@"background.png"];
         bg.scale = _scaleFactor;
-        bg.position = ccp(_winSize.width * 0.5, _winSize.height * 0.5);
+        bg.position = ccp(_winSize.width * 0.5, _winSize.height * 0.5f);
         [self addChild:bg z:0];
 
         // Add the title
         CCSprite * title = [CCSprite spriteWithFile:@"title.png"];
         title.scale = _scaleFactor;
-        _headerYOffset = title.contentSize.height * _scaleFactor * 1.5;
+        _headerYOffset = title.contentSize.height * _scaleFactor * 1.5f;
         title.position = ccp(_winSize.width * 0.5,
                              _winSize.height - _headerYOffset);
         [self addChild:title z:0];
@@ -63,7 +50,7 @@
         for (int i = 0; i < 3; i++) {
             CCSprite * life = [CCSprite spriteWithFile:@"life.png"];
             life.scale = _scaleFactor;
-            life.position = ccp((life.contentSize.width * _scaleFactor * 1.5 * (i + 1)),
+            life.position = ccp((life.contentSize.width * _scaleFactor * 1.5f * (i + 1)),
                                 _winSize.height - _headerYOffset);
             [self addChild:life z:0];
             [_lives addObject:life];
@@ -72,52 +59,38 @@
         // Add the score label
         _scoreValue = 0;
         _score = [CCLabelTTF labelWithString:@"0" fontName:@"Courier New" fontSize:(_fontSize)];
-        _score.position = ccp((_winSize.width * 0.9) - (_score.contentSize.width * _scaleFactor),
+        _score.position = ccp((_winSize.width * 0.9f) - (_score.contentSize.width * _scaleFactor),
                               _winSize.height - _headerYOffset);
         [_score setColor:ccc3(255, 255, 255)];
         [self addChild:_score z:0];
 
-        // Makin' bacon...
-        _bits = [[NSMutableArray alloc] init];
-        for (int col = 0; col < 16; col++) {
-            for (int row = 0; row < 3; row++) {
-                CCSprite * bit;
-                if (row == 0) {
-                    bit = [CCSprite spriteWithFile:@"bacon-top.png"];
-                }
-                else if (row == 1) {
-                    bit = [CCSprite spriteWithFile:@"bacon-middle.png"];
-                }
-                else if (row == 2) {
-                    bit = [CCSprite spriteWithFile:@"bacon-bottom.png"];
-                }
-                bit.scale = _scaleFactor;
-
-                int x = (_winSize.width * 0.2) + (bit.contentSize.width * _scaleFactor * col);
-                int y = (_winSize.height * 0.5) - (bit.contentSize.height * _scaleFactor * row);
-
-                bit.position = ccp(x, y);
-
-                [self addChild:bit z:0];
-                [_bits addObject:bit];
-            }
-        }
+        // Add the completion message, but hide for now
+        _message = [CCLabelTTF
+            labelWithString:@"Level Complete!\nTap to continue"
+            fontName:@"Courier New"
+            fontSize:(_fontSize * 1.5f)
+        ];
+        _message.horizontalAlignment = kCCTextAlignmentCenter;
+        _message.position = ccp(_winSize.width * 0.5f, _winSize.height * 0.5f);
+        _message.color = ccc3(255, 255, 255);
+        _message.visible = false;
+        [self addChild:_message z:0];
 
         // Add the shooter
         _shooter = [CCSprite spriteWithFile:@"actor.png"];
         _shooter.scale = _scaleFactor;
-        _shooter.position = ccp(_winSize.width * 0.5,
-                               (_winSize.height * 0.1) + (_shooter.contentSize.height * _scaleFactor * 0.5));
+        _shooter.position = ccp(_winSize.width * 0.5f,
+                               (_winSize.height * 0.1f) + (_shooter.contentSize.height * _scaleFactor * 0.5f));
         [self addChild:_shooter z:0];
-
-        // Create array to hold ammo yet to be fired
-        _ammo = [[NSMutableArray alloc] init];
 
         // Load sound effects
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"boom.wav"];
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"applause.wav"];
 
-        // Register update callback to handle collision detection
+        // Setup the first level
+        [self setupLevel];
+
+        // Register update callback
         [self schedule:@selector(update:)];
     }
 
@@ -142,29 +115,50 @@
 	[super dealloc];
 }
 
-- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize {
-    CGRect newRect = CGRectIntegral(CGRectMake(0, 0, newSize.width, newSize.height));
-    CGImageRef imageRef = image.CGImage;
+- (void) setupLevel {
 
-    UIGraphicsBeginImageContextWithOptions(newSize, NO, 0);
-    CGContextRef context = UIGraphicsGetCurrentContext();
+    _levelComplete = false;
 
-    // Set the quality level to use when rescaling
-    CGContextSetInterpolationQuality(context, kCGInterpolationHigh);
-    CGAffineTransform flipVertical = CGAffineTransformMake(1, 0, 0, -1, 0, newSize.height);
+    // Add the completion message, but hide for now
+    _message.visible = false;
 
-    CGContextConcatCTM(context, flipVertical);
-    // Draw into the context; this scales the image
-    CGContextDrawImage(context, newRect, imageRef);
+    // Empty any ammo and create a new array to hold shots
+    [_ammo release];
+    _ammo = [[NSMutableArray alloc] init];
 
-    // Get the resized image from the context and a UIImage
-    CGImageRef newImageRef = CGBitmapContextCreateImage(context);
-    UIImage *newImage = [UIImage imageWithCGImage:newImageRef];
+    // Makin' bacon...
+    [_bits release];
+    _bits = [[NSMutableArray alloc] init];
+    for (int col = 0; col < 16; col++) {
+        for (int row = 0; row < 3; row++) {
+            CCSprite * bit = nil;
+            if (row == 0) {
+                bit = [CCSprite spriteWithFile:@"bacon-top.png"];
+            }
+            else if (row == 1) {
+                bit = [CCSprite spriteWithFile:@"bacon-middle.png"];
+            }
+            else if (row == 2) {
+                bit = [CCSprite spriteWithFile:@"bacon-bottom.png"];
+            }
 
-    CGImageRelease(newImageRef);
-    UIGraphicsEndImageContext();
+            if (bit) {
+                bit.scale = _scaleFactor;
 
-    return newImage;
+                float x = (_winSize.width * 0.2f) + (bit.contentSize.width * _scaleFactor * col);
+                float y = (_winSize.height * 0.5f) - (bit.contentSize.height * _scaleFactor * row);
+
+                bit.position = ccp(x, y);
+
+                [self addChild:bit z:0];
+                [_bits addObject:bit];
+            }
+        }
+    }
+
+    // Reposition the shooter
+    _shooter.position = ccp(_winSize.width * 0.5f,
+                           (_winSize.height * 0.1f) + (_shooter.contentSize.height * _scaleFactor * 0.5f));
 }
 
 - (void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -177,25 +171,21 @@
 - (void) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
     // Record end of touch
-    UITouch *touch = [touches anyObject];
-    CGPoint target = [self convertTouchToNodeSpace:touch];
-    float swipeLength = ccpDistance(_touchStart, target);
+    CGPoint target = [self convertTouchToNodeSpace:[touches anyObject]];
+    float length = ccpDistance(_touchStart, target);
 
     // Move the shooter to the end of a swipe
-    if ([self isSwipe:swipeLength])
-    {
+    if (length > _swipeMin) {
         [self moveShooter:target];
     }
-
-    // Otherwise, fire a projectile
-    else
-    {
-        [self fireAmmo:target];
+    else {
+        // Setup a new level, if level complete
+        if (_levelComplete)
+            [self setupLevel];
+        // Otherwise, fire a projectile
+        else
+            [self fireAmmo:target];
     }
-}
-
-- (bool) isSwipe:(float)length {
-    return length > (20 * _scaleFactor);
 }
 
 - (void) fireAmmo:(CGPoint)end {
@@ -203,10 +193,11 @@
     // Set up initial location of projectile
     CCSprite *projectile = [CCSprite spriteWithFile:@"ammo.png"];
     projectile.scale = _scaleFactor;
-    projectile.position = ccp(_shooter.position.x, _shooter.position.y + (_shooter.contentSize.width * _scaleFactor * 0.5));
+    projectile.position = ccp(_shooter.position.x, _shooter.position.y + (_shooter.contentSize.width * _scaleFactor * 0.5f));
+    CGPoint dest = ccp(_shooter.position.x, _yMin);
 
     // Determine offset of location to projectile
-    CGPoint offset = ccpSub(end, projectile.position);
+    CGPoint offset = ccpSub(dest, projectile.position);
 
     // Bail out if you are shooting down or backwards
     if (offset.y <= 0) return;
@@ -214,16 +205,16 @@
     // Ok to add now - we've double checked position
     [self addChild:projectile];
 
-    int realY = _winSize.height + (projectile.contentSize.height * _scaleFactor * 0.5);
+    float realY = _winSize.height + (projectile.contentSize.height * _scaleFactor * 0.5f);
     float ratio = (float) offset.x / (float) offset.y;
-    int realX = (realY * ratio) + projectile.position.x;
+    float realX = (realY * ratio) + projectile.position.x;
     CGPoint realDest = ccp(realX, realY);
 
     // Calculate duration of shot for fixed velocity
-    int offRealX = realX - projectile.position.x;
-    int offRealY = realY - projectile.position.y;
+    float offRealX = realX - projectile.position.x;
+    float offRealY = realY - projectile.position.y;
     float length = sqrtf((offRealX*offRealX)+(offRealY*offRealY));
-    float velocity = 300 * _scaleFactor;
+    float velocity = 300.0f * _scaleFactor;
     float realMoveDuration = length/velocity;
 
     // Play sound effect
@@ -247,12 +238,20 @@
 
 - (void) moveShooter:(CGPoint)end {
 
+    // Cancel any in-progress actions
+    [_shooter stopAllActions];
+
+    // Don't allow shooter to go out-of-bounds
+    float destX = max(min(end.x, _xMax), _xMin);
+
     // Determine offset of for the move
-    CGPoint dest = ccp(end.x, _shooter.position.y);
+    CGPoint dest = ccp(destX, _shooter.position.y);
 
     // Calculate duration of move for fixed velocity
-    float length = abs(end.x - _shooter.position.x);
-    float velocity = 300 * _scaleFactor;
+    float length = destX - _shooter.position.x;
+    length *= length;
+    length = sqrtf(length);
+    float velocity = 300.0f * _scaleFactor;
     float duration = length/velocity;
 
     // Move shooter to actual endpoint
@@ -316,6 +315,7 @@
     {
         [[SimpleAudioEngine sharedEngine] playEffect:@"applause.wav"];
         _levelComplete = true;
+        _message.visible = true;
     }
 }
 
@@ -333,10 +333,10 @@
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
         if (size.height == 480) {
-            _scaleFactor = 0.85; // iPhone 3.5"
+            _scaleFactor = 0.85f; // iPhone 3.5"
         }
         else {
-            _scaleFactor = 0.85; // iPhone 4.0"
+            _scaleFactor = 0.85f; // iPhone 4.0"
         }
     }
     else
@@ -350,13 +350,16 @@
     }
 
     // Scale font size
-    _fontSize = 24 * _scaleFactor;
+    _fontSize = 24.0f * _scaleFactor;
+
+    // Scale swipe distance
+    _swipeMin = 0.05f * _winSize.width;
 
     // Calculate game stage bounds
-    _xMin = _winSize.width * 0.1;
-    _xMax = _winSize.width * 0.9;
-    _yMin = _winSize.height * 0.8;
-    _yMax = _winSize.height * 0.1;
+    _xMin = _winSize.width * 0.12f;
+    _xMax = _winSize.width * 0.88f;
+    _yMin = _winSize.height * 0.8f;
+    _yMax = _winSize.height * 0.1f;
 }
 
 

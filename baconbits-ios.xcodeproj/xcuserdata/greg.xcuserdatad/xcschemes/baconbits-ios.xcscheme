@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "37E2D2B31853848600886A49"
-               BuildableName = "baconbits-ios.app"
+               BuildableName = "Bacon Bits.app"
                BlueprintName = "baconbits-ios"
                ReferencedContainer = "container:baconbits-ios.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37E2D2B31853848600886A49"
-            BuildableName = "baconbits-ios.app"
+            BuildableName = "Bacon Bits.app"
             BlueprintName = "baconbits-ios"
             ReferencedContainer = "container:baconbits-ios.xcodeproj">
          </BuildableReference>
@@ -52,7 +52,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37E2D2B31853848600886A49"
-            BuildableName = "baconbits-ios.app"
+            BuildableName = "Bacon Bits.app"
             BlueprintName = "baconbits-ios"
             ReferencedContainer = "container:baconbits-ios.xcodeproj">
          </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "37E2D2B31853848600886A49"
-            BuildableName = "baconbits-ios.app"
+            BuildableName = "Bacon Bits.app"
             BlueprintName = "baconbits-ios"
             ReferencedContainer = "container:baconbits-ios.xcodeproj">
          </BuildableReference>

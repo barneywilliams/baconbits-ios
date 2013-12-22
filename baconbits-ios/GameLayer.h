@@ -16,37 +16,30 @@
 @interface GameLayer : CCLayer <GKAchievementViewControllerDelegate, GKLeaderboardViewControllerDelegate>
 {
     float _scaleFactor;
-    int _fontSize;
+    float _fontSize;
     float _headerYOffset;
     float _xMin, _xMax, _yMin, _yMax;
-    CGSize _winSize;
-    CCLabelTTF * _score;
+    float _swipeMin;
     int _scoreValue;
     bool _levelComplete;
+
+    CGSize _winSize;
+    CGPoint _touchStart;
+    CCLabelTTF * _score;
+    CCLabelTTF * _message;
     CCSprite * _shooter;
     NSMutableArray * _bits;
     NSMutableArray * _ammo;
     NSMutableArray * _lives;
-    CGPoint _touchStart;
 }
 
-// returns a CCScene that contains the HelloWorldLayer as the only child
+// returns a CCScene that contains the GameLayer as the only child
 +(CCScene *) scene;
 
 - (void) configureForDevice;
-
-// Rescales an image
-- (UIImage *)resizeImage:(UIImage*)image newSize:(CGSize)newSize;
-
-// Indicates if the latest touch is a swipe (vs a tap)
-- (bool) isSwipe:(float)length;
-
-// Fires a projectile towards the point
-- (void) fireAmmo:(CGPoint)end;
-
-// Moves the shooter to the point
-- (void) moveShooter:(CGPoint)end;
-
+- (void) setupLevel;
 - (void) checkLevelComplete;
+- (void) fireAmmo:(CGPoint)end;
+- (void) moveShooter:(CGPoint)end;
 
 @end
