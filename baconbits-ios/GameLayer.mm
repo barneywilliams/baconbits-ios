@@ -47,7 +47,10 @@
         [self addChild:title z:0];
 
         // Add the lives
-        for (int i = 0; i < 3; i++) {
+        _maxLives = 3;
+        _livesLeft = _maxLives;
+        _lives = [[NSMutableArray alloc] init];
+        for (int i = 0; i < _maxLives; i++) {
             CCSprite * life = [CCSprite spriteWithFile:@"life.png"];
             life.scale = _scaleFactor;
             life.position = ccp((life.contentSize.width * _scaleFactor * 1.5f * (i + 1)),
@@ -76,6 +79,17 @@
         _message.visible = false;
         [self addChild:_message z:0];
 
+        // Add the Game Over message, but hide for now
+        _messageGameOver = [CCLabelTTF
+                    labelWithString:@"Game Over!\nTap to play again"
+                    fontName:@"Courier New"
+                    fontSize:(_fontSize * 1.5f)];
+        _messageGameOver.horizontalAlignment = kCCTextAlignmentCenter;
+        _messageGameOver.position = ccp(_winSize.width * 0.5f, _winSize.height * 0.5f);
+        _messageGameOver.color = ccc3(255, 255, 255);
+        _messageGameOver.visible = false;
+        [self addChild:_messageGameOver z:0];
+
         // Add the shooter
         _shooter = [CCSprite spriteWithFile:@"actor.png"];
         _shooter.scale = _scaleFactor;
@@ -88,6 +102,7 @@
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"applause.wav"];
 
         // Setup the first level
+        _level = 1;
         [self setupLevel];
 
         // Register update callback
@@ -106,6 +121,8 @@
 
     [_bits release];
     _bits = nil;
+    [_bitsFalling release];
+    _bitsFalling = nil;
     [_ammo release];
     _ammo = nil;
     [_lives release];
@@ -117,48 +134,76 @@
 
 - (void) setupLevel {
 
+    if (_gameOver) {
+        _level = 1;
+        _scoreValue = 0;
+        _gameOver = false;
+        _livesLeft = 3;
+    }
+
+    for (int i = 0; i < 3; i++) {
+        [_lives[i] setVisible:(i < _livesLeft)];
+    }
+
+    _score.string = [NSString stringWithFormat:@"%d", _scoreValue];
     _levelComplete = false;
 
-    // Add the completion message, but hide for now
+    // Hide the messages
     _message.visible = false;
+    _messageGameOver.visible = false;
 
     // Empty any ammo and create a new array to hold shots
+    for (CCSprite *fireball in _ammo) {
+        [self removeChild:fireball cleanup:YES];
+    }
     [_ammo release];
     _ammo = [[NSMutableArray alloc] init];
+    for (CCSprite *bit in _bitsFalling) {
+        [self removeChild:bit cleanup:YES];
+    }
+    [_bitsFalling release];
+    _bitsFalling = [[NSMutableArray alloc] init];
 
     // Makin' bacon...
-    [_bits release];
-    _bits = [[NSMutableArray alloc] init];
-    for (int col = 0; col < 16; col++) {
-        for (int row = 0; row < 3; row++) {
-            CCSprite * bit = nil;
-            if (row == 0) {
-                bit = [CCSprite spriteWithFile:@"bacon-top.png"];
-            }
-            else if (row == 1) {
-                bit = [CCSprite spriteWithFile:@"bacon-middle.png"];
-            }
-            else if (row == 2) {
-                bit = [CCSprite spriteWithFile:@"bacon-bottom.png"];
-            }
-
-            if (bit) {
-                bit.scale = _scaleFactor;
-
-                float x = (_winSize.width * 0.2f) + (bit.contentSize.width * _scaleFactor * col);
-                float y = (_winSize.height * 0.5f) - (bit.contentSize.height * _scaleFactor * row);
-
-                bit.position = ccp(x, y);
-
-                [self addChild:bit z:0];
-                [_bits addObject:bit];
-            }
-        }
-    }
+    CGPoint center = ccp(_winSize.width * 0.5f, _winSize.height * 0.5f);
+    int baconWidth = (4 + _level) * 2;
+    [self makeBacon:baconWidth at:center];
 
     // Reposition the shooter
     _shooter.position = ccp(_winSize.width * 0.5f,
                            (_winSize.height * 0.1f) + (_shooter.contentSize.height * _scaleFactor * 0.5f));
+}
+
+- (void) makeBacon:(int)width at:(CGPoint)center {
+    for (CCSprite *bit in _bits) {
+        [self removeChild:bit cleanup:YES];
+    }
+    [_bits release];
+    _bits = [[NSMutableArray alloc] init];
+
+    const int height = 3;
+
+    for (int col = 0; col < width; col++) {
+        for (int row = 0; row < height; row++) {
+            CCSprite * bit = nil;
+            if (row == 0)
+                bit = [CCSprite spriteWithFile:@"bacon-top.png"];
+            else if (row == 1)
+                bit = [CCSprite spriteWithFile:@"bacon-middle.png"];
+            else if (row == 2)
+                bit = [CCSprite spriteWithFile:@"bacon-bottom.png"];
+
+            CGPoint origin = ccp(center.x - (((width  * 0.5f) - 0.5f) * (bit.contentSize.width  * _scaleFactor)),
+                                 center.y + (((height * 0.5f) - 0.5f) * (bit.contentSize.height * _scaleFactor)));
+
+            bit.scale = _scaleFactor;
+            bit.position = ccp(origin.x + (col * bit.contentSize.width  * _scaleFactor),
+                               origin.y - (row * bit.contentSize.height * _scaleFactor));
+
+            [self addChild:bit z:0];
+            [_bits addObject:bit];
+        }
+    }
 }
 
 - (void) ccTouchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
@@ -171,7 +216,6 @@
 - (void) ccTouchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
     // Record end of touch
-    uitouch *touch = ;
     CGPoint target = [self convertTouchToNodeSpace:[touches anyObject]];
     float swipeLength = ccpDistance(_touchStart, target);
 
@@ -181,8 +225,11 @@
     }
     else {
         // Setup a new level, if level complete
-        if (_levelComplete)
+        if (_levelComplete) {
+            _level++;
             [self setupLevel];
+        }
+        
         // Otherwise, fire a projectile
         else
             [self fireAmmo:target];
@@ -200,44 +247,31 @@
     projectile.scale = _scaleFactor;
     projectile.position = ccp(_shooter.position.x, _shooter.position.y + (_shooter.contentSize.width * _scaleFactor * 0.5f));
 
-    // Determine offset of location to projectile
-    CGPoint offset = ccpSub(end, projectile.position);
-
     // Bail out if you are shooting down or backwards
+    CGPoint offset = ccpSub(end, projectile.position);
     if (offset.y <= 0) return;
 
-    // Ok to add now - we've double checked position
-    [self addChild:projectile];
-
-    float realY = _winSize.height + (projectile.contentSize.height * _scaleFactor * 0.5f);
-    float ratio = (float) offset.x / (float) offset.y;
-    float realX = (realY * ratio) + projectile.position.x;
-    CGPoint realDest = ccp(realX, realY);
+    float destY = _winSize.height + (projectile.contentSize.height * _scaleFactor * 0.5f);
+    CGPoint destination = ccp(projectile.position.x, destY);
 
     // Calculate duration of shot for fixed velocity
-    float offRealX = realX - projectile.position.x;
-    float offRealY = realY - projectile.position.y;
-    float length = sqrtf((offRealX*offRealX)+(offRealY*offRealY));
+    float distance = projectile.position.y + destY;
     float velocity = 300.0f * _scaleFactor;
-    float realMoveDuration = length/velocity;
+    float duration = distance/velocity;
 
     // Play sound effect
     [[SimpleAudioEngine sharedEngine] playEffect:@"boom.wav"];
 
     // Move projectile to actual endpoint
+    [_ammo addObject:projectile];
+    [self addChild:projectile];
     [projectile runAction:
-     [CCSequence actions:
-      [CCMoveTo actionWithDuration:realMoveDuration position:realDest],
-      [CCCallBlockN actionWithBlock:^(CCNode *node) {
-         [_ammo removeObject:node];
-         [node removeFromParentAndCleanup:YES];
-     }],
-      nil]
-     ];
+        [CCSequence actions:
+            [CCMoveTo actionWithDuration:duration position:destination],
+            [CCCallBlockN actionWithBlock:^(CCNode *node){[_ammo removeObject:node]; [node removeFromParentAndCleanup:YES];}],
+            nil]];
 
     projectile.tag = 2;
-
-    [_ammo addObject:projectile];
 }
 
 - (void) moveShooter:(CGPoint)end {
@@ -245,25 +279,20 @@
     // Cancel any in-progress actions
     [_shooter stopAllActions];
 
-    // Don't allow shooter to go out-of-bounds
-    float destX = max(min(end.x, _xMax), _xMin);
-
-    // Determine offset of for the move
-    CGPoint dest = ccp(destX, _shooter.position.y);
+    // Determine offset of for the move (don't allow shooter to go out-of-bounds)
+    CGPoint dest = ccp(max( min(end.x, _stageRect.origin.x + _stageRect.size.width),
+                           _stageRect.origin.x),
+                       _shooter.position.y);
 
     // Calculate duration of move for fixed velocity
-    float length = destX - _shooter.position.x;
-    length *= length;
-    length = sqrtf(length);
+    float distance = abs(dest.x - _shooter.position.x);
     float velocity = 300.0f * _scaleFactor;
-    float duration = length/velocity;
+    float duration = distance/velocity;
 
     // Move shooter to actual endpoint
     [_shooter runAction:
-     [CCSequence actions:
-      [CCMoveTo actionWithDuration:duration position:dest],
-      nil]
-     ];
+        [CCSequence actions:
+            [CCMoveTo actionWithDuration:duration position:dest], nil]];
 }
 
 - (void) update:(ccTime)timestamp {
@@ -279,37 +308,69 @@
 
 - (void) updateAmmo {
 
+    // Check for falling bit collisions with shooter
+    NSMutableArray *bitsToDelete = [[NSMutableArray alloc] init];
+    bool shooterHit = false;
+    for (CCSprite *bit in _bitsFalling) {
+        if (CGRectIntersectsRect(_shooter.boundingBox, bit.boundingBox)) {
+            [bitsToDelete addObject:bit];
+            shooterHit = true;
+        }
+    }
+    if (shooterHit) {
+        if (_livesLeft > 0) {
+            _livesLeft--;
+            [_lives[_livesLeft] setVisible:false];
+        }
+        else {
+            [self gameOver];
+        }
+    }
+    for (CCSprite *bit in bitsToDelete) {
+        [self removeChild:bit cleanup:YES];
+        [_bitsFalling removeObject:bit];
+    }
+    [bitsToDelete release];
+
     // Check all fireballs in flight for collisions
     NSMutableArray *fireballsToDelete = [[NSMutableArray alloc] init];
     for (CCSprite *fireball in _ammo) {
-        NSMutableArray *bitsToDelete = [[NSMutableArray alloc] init];
 
+        // Check if the current fireball has struck any bits
+        NSMutableArray *bitsHit = [[NSMutableArray alloc] init];
         for (CCSprite *bit in _bits) {
-            if (CGRectIntersectsRect(fireball.boundingBox, bit.boundingBox)) {
-                [bitsToDelete addObject:bit];
-                // break;
-            }
+            if (CGRectIntersectsRect(fireball.boundingBox, bit.boundingBox))
+                [bitsHit addObject:bit];
         }
 
-        for (CCSprite *bit in bitsToDelete) {
-             _scoreValue += 100;
-             _score.string = [NSString stringWithFormat:@"%d", _scoreValue];
+        // Start struck bits falling
+        for (CCSprite *bit in bitsHit) {
             [_bits removeObject:bit];
-            [self removeChild:bit cleanup:YES];
+            [_bitsFalling addObject:bit];
+            _scoreValue += 100;
+            _score.string = [NSString stringWithFormat:@"%d", _scoreValue];
+            CGPoint destination = ccp(bit.position.x, -(bit.boundingBox.size.height * _scaleFactor));
+            float length = abs(bit.position.y + destination.y);
+            float velocity = 45.0f * _scaleFactor;
+            float duration = length/velocity;
+            [bit runAction:
+                [CCSequence actions:
+                    [CCMoveTo actionWithDuration:duration position:destination],
+                    [CCCallBlockN actionWithBlock:^(CCNode *node){[self removeChild:node cleanup:YES];[_bitsFalling removeObject:node];}],
+                    nil]];
         }
 
-        if (bitsToDelete.count > 0) {
+        // Mark fireball for deletion, if strike detected
+        if (bitsHit.count > 0)
             [fireballsToDelete addObject:fireball];
-        }
-
-        [bitsToDelete release];
+        [bitsHit release];
     }
 
+    // Cleanup used fireballs
     for (CCSprite *fireball in fireballsToDelete) {
-        [_ammo removeObject:fireball];
         [self removeChild:fireball cleanup:YES];
+        [_ammo removeObject:fireball];
     }
-
     [fireballsToDelete release];
 }
 
@@ -321,6 +382,13 @@
         _levelComplete = true;
         _message.visible = true;
     }
+}
+
+- (void) gameOver {
+    [[SimpleAudioEngine sharedEngine] playEffect:@"applause.wav"];
+    _levelComplete = true;
+    _messageGameOver.visible = true;
+    _gameOver = true;
 }
 
 - (void) configureForDevice
@@ -336,21 +404,13 @@
 
     if(UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
     {
-        if (size.height == 480) {
-            _scaleFactor = 0.85f; // iPhone 3.5"
-        }
-        else {
-            _scaleFactor = 0.85f; // iPhone 4.0"
-        }
+        if (size.height == 480) _scaleFactor = 0.85f; // iPhone 3.5"
+        else _scaleFactor = 0.85f; // iPhone 4.0"
     }
     else
     {
-        if (scale == 1.0) {
-            _scaleFactor = 1.0; // iPad
-        }
-        else {
-            _scaleFactor = 2.0; // iPad-Retina
-        }
+        if (scale == 1.0) _scaleFactor = 1.0; // iPad
+        else _scaleFactor = 2.0; // iPad-Retina
     }
 
     // Scale font size
@@ -360,10 +420,10 @@
     _swipeMin = 0.05f * _winSize.width;
 
     // Calculate game stage bounds
-    _xMin = _winSize.width * 0.12f;
-    _xMax = _winSize.width * 0.88f;
-    _yMin = _winSize.height * 0.8f;
-    _yMax = _winSize.height * 0.1f;
+    _stageRect = CGRectMake(_winSize.width  * 0.12f,
+                            _winSize.height * 0.10f,
+                            _winSize.width  * 0.76f,
+                            _winSize.height * 0.70f);
 }
 
 
